@@ -20,6 +20,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class SpringDataConfig {
 
+    @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl("jdbc:postgresql://dpg-cs3s1pg8fa8c73dglro0-a.oregon-postgres.render.com:5432/api_db_oys9");
@@ -60,7 +61,6 @@ public class SpringDataConfig {
 
         return hibernateProperties;
     }
-
 
 
 }
