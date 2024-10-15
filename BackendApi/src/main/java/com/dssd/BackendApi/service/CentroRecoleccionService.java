@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface CentroRecoleccionService {
     CentroRecoleccion createCentroRecoleccion(String nombre);
     Iterable<CentroRecoleccion> getAllCentrosRecoleccion();
-    Optional<CentroRecoleccion> getCentroRecoleccionById(Long id);
-    CentroRecoleccion updateCentroRecoleccion(Long id, String nombre);
-    void deleteCentroRecoleccion(Long id);
+    CentroRecoleccion getCentroRecoleccionById(Long id) throws Exception;
+    CentroRecoleccion updateCentroRecoleccion(Long id, String nombre) throws Exception;
+    void deleteCentroRecoleccion(Long id) throws Exception;
 }

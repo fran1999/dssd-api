@@ -36,17 +36,17 @@ public class CentroRecoleccionServiceImpl implements CentroRecoleccionService{
     }
 
     @Override
-    public Optional<CentroRecoleccion> getCentroRecoleccionById(Long id) {
-        try{
-            return this.centroRecoleccionRepository.findById(id);
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
+    public CentroRecoleccion getCentroRecoleccionById(Long id) throws Exception{
+        Optional<CentroRecoleccion> centroRecoleccionOptional = this.centroRecoleccionRepository.findById(id);
+        if(centroRecoleccionOptional.isPresent()){
+            return centroRecoleccionOptional.get();
+        }else{
+            throw new Exception("No se encontró el centro recoleccion con id:" + id);
         }
     }
 
     @Override
-    public CentroRecoleccion updateCentroRecoleccion(Long id, String nombre) {
+    public CentroRecoleccion updateCentroRecoleccion(Long id, String nombre) throws Exception{
         Optional<CentroRecoleccion> centroRecoleccionOptional = this.centroRecoleccionRepository.findById(id);
         if(centroRecoleccionOptional.isPresent()){
             CentroRecoleccion centroRecoleccion = centroRecoleccionOptional.get();
@@ -54,23 +54,24 @@ public class CentroRecoleccionServiceImpl implements CentroRecoleccionService{
             try {
                 return this.centroRecoleccionRepository.save(centroRecoleccion);
             }catch (Exception e){
-                e.printStackTrace();
-                return null;
+                throw new Exception(e.getMessage());
             }
         }else{
-            return null;
+            throw new Exception("No se encontró el centro recoleccion con id:" + id);
         }
     }
 
     @Override
-    public void deleteCentroRecoleccion(Long id) {
+    public void deleteCentroRecoleccion(Long id) throws Exception{
         Optional<CentroRecoleccion> centroRecoleccionOptional = this.centroRecoleccionRepository.findById(id);
         if(centroRecoleccionOptional.isPresent()){
             try {
                 this.centroRecoleccionRepository.delete(centroRecoleccionOptional.get());
             }catch (Exception e){
-                e.printStackTrace();
+                throw new Exception(e.getMessage());
             }
+        }else{
+            throw new Exception("No se encontró el centro recoleccion con id:" + id);
         }
     }
 }

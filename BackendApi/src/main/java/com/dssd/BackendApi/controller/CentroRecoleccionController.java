@@ -29,32 +29,32 @@ public class CentroRecoleccionController {
     }
 
     @GetMapping("/centrosRecoleccion/{id}")
-    public ResponseEntity<CentroRecoleccion> getDepositoById(@PathVariable("id") Long id){
-        Optional<CentroRecoleccion> centroRecoleccion = this.centroRecoleccionService.getCentroRecoleccionById(id);
-        if(centroRecoleccion.isPresent()){
-            return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion.get());
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity getDepositoById(@PathVariable("id") Long id){
+        try{
+            CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.getCentroRecoleccionById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PutMapping("/centrosRecoleccion/{id}")
-    public ResponseEntity<CentroRecoleccion> updateDeposito(@PathVariable("id") Long id, @RequestBody CreateCentroRecoleccionRequest centroRecoleccionRequest){
-        CentroRecoleccion updatedCentro = this.centroRecoleccionService.updateCentroRecoleccion(id, centroRecoleccionRequest.getNombre());
-        if(updatedCentro != null){
-            return ResponseEntity.status(HttpStatus.OK).body(updatedCentro);
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity updateDeposito(@PathVariable("id") Long id, @RequestBody CreateCentroRecoleccionRequest centroRecoleccionRequest){
+        try{
+            CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.updateCentroRecoleccion(id, centroRecoleccionRequest.getNombre());
+            return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @DeleteMapping("/centrosRecoleccion/{id}")
-    public ResponseEntity<HttpStatus> deleteDeposito(@PathVariable("id") Long id){
+    public ResponseEntity deleteDeposito(@PathVariable("id") Long id){
         try{
             this.centroRecoleccionService.deleteCentroRecoleccion(id);
             return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
