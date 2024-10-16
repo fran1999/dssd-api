@@ -6,6 +6,7 @@ import com.dssd.BackendApi.service.CentroRecoleccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class CentroRecoleccionController {
     private CentroRecoleccionService centroRecoleccionService;
 
     @PostMapping("/centrosRecoleccion")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CentroRecoleccion> createCentroRecoleccion(@RequestBody CreateCentroRecoleccionRequest centroRecoleccionRequest){
         return ResponseEntity.status(HttpStatus.OK).body(this.centroRecoleccionService.createCentroRecoleccion(centroRecoleccionRequest.getNombre()));
     }
@@ -39,6 +41,7 @@ public class CentroRecoleccionController {
     }
 
     @PutMapping("/centrosRecoleccion/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity updateDeposito(@PathVariable("id") Long id, @RequestBody CreateCentroRecoleccionRequest centroRecoleccionRequest){
         try{
             CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.updateCentroRecoleccion(id, centroRecoleccionRequest.getNombre());
@@ -49,6 +52,7 @@ public class CentroRecoleccionController {
     }
 
     @DeleteMapping("/centrosRecoleccion/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity deleteDeposito(@PathVariable("id") Long id){
         try{
             this.centroRecoleccionService.deleteCentroRecoleccion(id);
