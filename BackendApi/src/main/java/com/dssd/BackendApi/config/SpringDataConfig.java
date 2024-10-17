@@ -23,7 +23,7 @@ public class SpringDataConfig {
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setUrl("jdbc:postgresql://dpg-cs3s1pg8fa8c73dglro0-a.oregon-postgres.render.com:5432/api_db_oys9");
+        dataSource.setUrl("jdbc:postgresql://dpg-cs3s1pg8fa8c73dglro0-a:5432/api_db_oys9");
         dataSource.setUsername("api_db_oys9_user");
         dataSource.setPassword("B6a94ugaJPClmIB7JOr2UYyce2FhiBpN");
         return dataSource;
