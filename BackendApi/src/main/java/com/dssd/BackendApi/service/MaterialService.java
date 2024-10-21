@@ -2,10 +2,13 @@ package com.dssd.BackendApi.service;
 
 import com.dssd.BackendApi.model.Material;
 
+import java.util.Optional;
+
 public interface MaterialService {
     Material createMaterial(String tipo);
     Iterable<Material> getAllMateriales();
-    Material getMaterialById(Long id) throws Exception;
+    Optional<Material> getMaterialById(Long id);
+    Optional<Material> getMaterialByTipo(String tipo);
     Material updateMaterial(Long id, String tipo) throws Exception;
     void deleteMaterial(Long id) throws Exception;
 }

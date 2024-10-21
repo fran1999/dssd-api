@@ -1,23 +1,50 @@
 package com.dssd.BackendApi.service;
 
 import com.dssd.BackendApi.model.Material;
+import com.dssd.BackendApi.repository.MaterialRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
+
+    private final MaterialRepository materialRepository;
+
+    @Autowired
+    public MaterialServiceImpl(MaterialRepository materialRepository) {
+        this.materialRepository = materialRepository;
+    }
+
     @Override
     public Material createMaterial(String tipo) {
-        return null;
+        Material material = new Material(tipo);
+        try {
+            return this.materialRepository.save(material);
+        } catch (Exception e) {
+            e.getCause();
+            return null;
+        }
     }
 
     @Override
     public Iterable<Material> getAllMateriales() {
-        return null;
+        return this.materialRepository.findAll();
     }
 
     @Override
-    public Material getMaterialById(Long id) throws Exception {
-        return null;
+    public Optional<Material> getMaterialById(Long id) {
+        try {
+            return this.materialRepository.findById(id);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Material> getMaterialByTipo(String tipo) {
+        return this.materialRepository.findByTipo(tipo);
     }
 
     @Override
