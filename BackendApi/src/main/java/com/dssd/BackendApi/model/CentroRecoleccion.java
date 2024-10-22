@@ -46,4 +46,12 @@ public class CentroRecoleccion {
     public void agregarMaterial(Material material) {
         this.materiales.add(material);
     }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public List<Material> getMateriales() {
+        return this.materiales;
+    }
 }

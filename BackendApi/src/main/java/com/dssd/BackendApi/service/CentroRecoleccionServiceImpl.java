@@ -1,6 +1,7 @@
 package com.dssd.BackendApi.service;
 
 import com.dssd.BackendApi.model.CentroRecoleccion;
+import com.dssd.BackendApi.model.Material;
 import com.dssd.BackendApi.repository.CentroRecoleccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ public class CentroRecoleccionServiceImpl implements CentroRecoleccionService{
 
     @Autowired
     private CentroRecoleccionRepository centroRecoleccionRepository;
+    @Autowired
+    private MaterialService materialService;
 
     @Override
     public CentroRecoleccion createCentroRecoleccion(String nombre) {
@@ -72,6 +75,21 @@ public class CentroRecoleccionServiceImpl implements CentroRecoleccionService{
             }
         }else{
             throw new Exception("No se encontró el centro recoleccion con id:" + id);
+        }
+    }
+
+    @Override
+    public CentroRecoleccion asignarMaterialAlCentroRecoleccion(Long materialId, Long id) throws Exception {
+        CentroRecoleccion centroRecoleccion = this.getCentroRecoleccionById(id);
+        Optional<Material> material = this.materialService.getMaterialById(materialId);
+        if (material.isPresent()) {
+            if (centroRecoleccion.getMateriales().contains(material.get())) {
+                return centroRecoleccion;
+            }
+            centroRecoleccion.agregarMaterial(material.get());
+            return centroRecoleccionRepository.save(centroRecoleccion);
+        } else {
+            throw new Exception("El material no existe");
         }
     }
 }
