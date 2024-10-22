@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y openjdk-17-jdk
 WORKDIR /dssd-api
 COPY . .
 
-RUN chmod +x ./mvnw
+RUN chmod +x ./mvn
 RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
