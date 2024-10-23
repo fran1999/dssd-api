@@ -2,6 +2,8 @@ package com.dssd.BackendApi.controller;
 
 import com.dssd.BackendApi.dtos.CreateCentroRecoleccionRequest;
 import com.dssd.BackendApi.dtos.MaterialRequest;
+import com.dssd.BackendApi.exception.CentroRecoleccionNoEncontrado;
+import com.dssd.BackendApi.exception.MaterialNoExiste;
 import com.dssd.BackendApi.model.CentroRecoleccion;
 import com.dssd.BackendApi.service.CentroRecoleccionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +41,10 @@ public class CentroRecoleccionController {
             }
             CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.asignarMaterialAlCentroRecoleccion(materialRequest.getId(), id);
             return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (MaterialNoExiste e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -50,17 +53,21 @@ public class CentroRecoleccionController {
         try {
             CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.getCentroRecoleccionById(id);
             return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion);
-        } catch (Exception e) {
+        } catch (CentroRecoleccionNoEncontrado e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @PutMapping("/centrosRecoleccion/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity updateDeposito(@PathVariable("id") Long id, @RequestBody CreateCentroRecoleccionRequest centroRecoleccionRequest) {
+    public ResponseEntity<?> updateDeposito(@PathVariable("id") Long id, @RequestBody CreateCentroRecoleccionRequest centroRecoleccionRequest) {
         try {
             CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.updateCentroRecoleccion(id, centroRecoleccionRequest.getNombre());
             return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion);
+        } catch (MaterialNoExiste e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -68,12 +75,14 @@ public class CentroRecoleccionController {
 
     @DeleteMapping("/centrosRecoleccion/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity deleteDeposito(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteDeposito(@PathVariable("id") Long id) {
         try {
             this.centroRecoleccionService.deleteCentroRecoleccion(id);
             return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK);
+        } catch (CentroRecoleccionNoEncontrado e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

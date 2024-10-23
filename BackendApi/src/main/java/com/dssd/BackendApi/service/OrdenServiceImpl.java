@@ -1,9 +1,6 @@
 package com.dssd.BackendApi.service;
 
-import com.dssd.BackendApi.exception.FechaEntregaIncorrecta;
-import com.dssd.BackendApi.exception.NoTrabajaConMaterial;
-import com.dssd.BackendApi.exception.OrdenNoEncontrada;
-import com.dssd.BackendApi.exception.OrdenTomadaPorOtroCentro;
+import com.dssd.BackendApi.exception.*;
 import com.dssd.BackendApi.model.CentroRecoleccion;
 import com.dssd.BackendApi.model.Material;
 import com.dssd.BackendApi.model.MaterialOrden;
@@ -70,6 +67,8 @@ public class OrdenServiceImpl implements OrdenService{
                     MaterialOrden materialOrdenCreada = this.materialOrdenService.guardarMaterialOrden(materialOrden);
                     materialesOrden.add(materialOrdenCreada);
                 } catch (Exception ignored) {}
+            } else {
+                throw new MaterialNoExiste("El material con id: "+id+" no existe");
             }
         });
         if (materialesOrden.size() == materiales.size()) {

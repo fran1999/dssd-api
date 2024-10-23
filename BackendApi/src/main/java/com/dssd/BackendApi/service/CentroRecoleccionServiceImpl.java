@@ -1,6 +1,7 @@
 package com.dssd.BackendApi.service;
 
 import com.dssd.BackendApi.exception.CentroRecoleccionNoEncontrado;
+import com.dssd.BackendApi.exception.MaterialNoExiste;
 import com.dssd.BackendApi.model.CentroRecoleccion;
 import com.dssd.BackendApi.model.Material;
 import com.dssd.BackendApi.repository.CentroRecoleccionRepository;
@@ -61,7 +62,7 @@ public class CentroRecoleccionServiceImpl implements CentroRecoleccionService {
                 throw new Exception(e.getMessage());
             }
         } else {
-            throw new Exception("No se encontró el centro recoleccion con id:" + id);
+            throw new CentroRecoleccionNoEncontrado("No se encontró el centro recoleccion con id:" + id);
         }
     }
 
@@ -75,7 +76,7 @@ public class CentroRecoleccionServiceImpl implements CentroRecoleccionService {
                 throw new Exception(e.getMessage());
             }
         } else {
-            throw new Exception("No se encontró el centro recoleccion con id:" + id);
+            throw new CentroRecoleccionNoEncontrado("No se encontró el centro recoleccion con id:" + id);
         }
     }
 
@@ -90,7 +91,7 @@ public class CentroRecoleccionServiceImpl implements CentroRecoleccionService {
             centroRecoleccion.agregarMaterial(material.get());
             return centroRecoleccionRepository.save(centroRecoleccion);
         } else {
-            throw new Exception("El material no existe");
+            throw new MaterialNoExiste("No se encontro el material con id: "+materialId);
         }
     }
 }

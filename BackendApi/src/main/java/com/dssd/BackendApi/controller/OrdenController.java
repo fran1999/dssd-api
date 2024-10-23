@@ -33,11 +33,17 @@ public class OrdenController {
     @PostMapping("/orden")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Orden> crearOrden(@RequestBody OrdenRequest ordenRequest) {
-        Orden orden = this.ordenService.createOrden(ordenRequest.getFechaLimite(), ordenRequest.getMateriales());
-        if (orden == null) {
+        try {
+            Orden orden = this.ordenService.createOrden(ordenRequest.getFechaLimite(), ordenRequest.getMateriales());
+            if (orden == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(orden);
+        } catch (MaterialNoExiste e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(orden);
     }
 
     @GetMapping("/ordenes")
@@ -82,7 +88,7 @@ public class OrdenController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Orden> marcarOrdenComoTomada(@PathVariable Long id, @PathVariable Long idCentro) {
         try {
-            System.out.println("Orden id: "+ id + " Centro id:" + idCentro);
+            System.out.println("Orden id: " + id + " Centro id:" + idCentro);
             Orden orden = this.ordenService.tomarOrden(id, idCentro);
             return ResponseEntity.status(HttpStatus.OK).body(orden);
         } catch (OrdenNoEncontrada | CentroRecoleccionNoEncontrado e) {
@@ -98,7 +104,7 @@ public class OrdenController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Orden> terminarOrden(@PathVariable Long id, @PathVariable Long idCentro) {
         try {
-            System.out.println("Orden id: "+ id + " Centro id:" + idCentro);
+            System.out.println("Orden id: " + id + " Centro id:" + idCentro);
             Orden orden = this.ordenService.terminarOrden(id, idCentro);
             return ResponseEntity.status(HttpStatus.OK).body(orden);
         } catch (OrdenNoEncontrada | CentroRecoleccionNoEncontrado e) {
