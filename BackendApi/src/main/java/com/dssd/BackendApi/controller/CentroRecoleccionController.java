@@ -37,15 +37,13 @@ public class CentroRecoleccionController {
             if (materialRequest.getId() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }
-            CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.agregarMaterialAlCentroRecoleccion(materialRequest.getId(), id);
+            CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.asignarMaterialAlCentroRecoleccion(materialRequest.getId(), id);
             return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-
-    ;
 
     @GetMapping("/centrosRecoleccion/{id}")
     public ResponseEntity<CentroRecoleccion> getDepositoById(@PathVariable("id") Long id) {

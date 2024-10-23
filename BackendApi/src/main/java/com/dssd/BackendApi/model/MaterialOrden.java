@@ -2,8 +2,6 @@ package com.dssd.BackendApi.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -11,8 +9,6 @@ import java.io.Serializable;
 @Table(name="orden_compuesta_por")
 public class MaterialOrden {
 
-    @Getter
-    @Setter
     @Embeddable
     public static class MaterialOrdenId implements Serializable {
         protected Long materialId;
@@ -21,6 +17,22 @@ public class MaterialOrden {
         }
         public MaterialOrdenId(Long materialId, Long ordenId) {
             this.materialId = materialId;
+            this.ordenId = ordenId;
+        }
+
+        public Long getMaterialId() {
+            return materialId;
+        }
+
+        public void setMaterialId(Long materialId) {
+            this.materialId = materialId;
+        }
+
+        public Long getOrdenId() {
+            return ordenId;
+        }
+
+        public void setOrdenId(Long ordenId) {
             this.ordenId = ordenId;
         }
 
@@ -60,22 +72,31 @@ public class MaterialOrden {
     @EmbeddedId
     private MaterialOrdenId id = new MaterialOrdenId();
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "materialId")
     @MapsId("materialId")
     @JsonBackReference
     private Material material;
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "ordenId")
     @MapsId("ordenId")
     @JsonBackReference
     private Orden orden;
 
-    @Setter
     private Float cantidad;
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public void setOrden(Orden orden) {
+        this.orden = orden;
+    }
+
+    public void setCantidad(Float cantidad) {
+        this.cantidad = cantidad;
+    }
 
     public MaterialOrdenId getId() {
         return id;

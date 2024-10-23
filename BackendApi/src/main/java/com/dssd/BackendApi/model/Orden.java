@@ -2,11 +2,8 @@ package com.dssd.BackendApi.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,22 +11,17 @@ import java.util.List;
 @Table(name="ordenes")
 public class Orden {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="orden_id")
     private Long id;
 
-    @Setter
-    @Getter
     @Column(name="fecha_inicio", nullable = true, unique = false)
     private LocalDateTime fechaInicio;
 
-    @Getter
     @Column(name="fecha_limite", nullable = false, unique = false)
     private LocalDateTime fechaLimite;
 
-    @Getter
     @Column(name="fecha_entrega", nullable = true, unique = false)
     private LocalDateTime fechaEntrega;
 
@@ -38,8 +30,6 @@ public class Orden {
     @JsonManagedReference
     private CentroRecoleccion centroRecoleccion;
 
-    @Setter
-    @Getter
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MaterialOrden> materialesOrden = new ArrayList<>();
 
@@ -49,4 +39,43 @@ public class Orden {
         this.fechaLimite = fechaLimite;
     }
 
+    public LocalDateTime getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setFechaInicio(LocalDateTime fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDateTime getFechaLimite() {
+        return fechaLimite;
+    }
+
+    public LocalDateTime getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    public void setFechaEntrega(LocalDateTime fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
+    }
+
+    public CentroRecoleccion getCentroRecoleccion() {
+        return centroRecoleccion;
+    }
+
+    public void setCentroRecoleccion(CentroRecoleccion centroRecoleccion) {
+        this.centroRecoleccion = centroRecoleccion;
+    }
+
+    public List<MaterialOrden> getMaterialesOrden() {
+        return materialesOrden;
+    }
+
+    public void setMaterialesOrden(List<MaterialOrden> materialesOrden) {
+        this.materialesOrden = materialesOrden;
+    }
 }

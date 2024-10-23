@@ -3,6 +3,10 @@ package com.dssd.BackendApi.controller;
 
 import com.dssd.BackendApi.dtos.OrdenBusquedaRequest;
 import com.dssd.BackendApi.dtos.OrdenRequest;
+import com.dssd.BackendApi.exception.CentroRecoleccionNoEncontrado;
+import com.dssd.BackendApi.exception.NoTrabajaConMaterial;
+import com.dssd.BackendApi.exception.OrdenNoEncontrada;
+import com.dssd.BackendApi.exception.OrdenTomada;
 import com.dssd.BackendApi.model.Orden;
 import com.dssd.BackendApi.service.OrdenService;
 import com.dssd.BackendApi.util.Validacion;
@@ -49,12 +53,12 @@ public class OrdenController {
 
     @GetMapping("/ordenes/busqueda")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Iterable<Orden>> getOrdenesByMaterialBetweenDates(@RequestBody OrdenBusquedaRequest ordenBusquedaRequest) throws Exception {
+    public ResponseEntity<Iterable<Orden>> getOrdenesByMaterialBetweenDates(@RequestBody OrdenBusquedaRequest ordenBusquedaRequest) {
         List<Orden> ordenes;
         LocalDateTime fechaComienzo = ordenBusquedaRequest.getFechaComienzo();
         LocalDateTime fechaFin = ordenBusquedaRequest.getFechaFin();
 
-        System.out.println("Obtener ordenes del "+ fechaComienzo+ " hasta el "+fechaFin);
+        System.out.println("Obtener ordenes del " + fechaComienzo + " hasta el " + fechaFin);
 
         if (validacion.validarFechas(fechaComienzo, fechaFin)) {
             try {
@@ -64,7 +68,7 @@ public class OrdenController {
                     ordenes = (List<Orden>) this.ordenService.getOrdenesByMaterialBetweenDates(ordenBusquedaRequest.getTipoMaterial(), fechaComienzo, fechaFin);
                 }
                 if (!ordenes.isEmpty()) {
-                    System.out.println("Se encontraron "+ordenes.size()+" ordenes");
+                    System.out.println("Se encontraron " + ordenes.size() + " ordenes");
                     return ResponseEntity.status(HttpStatus.OK).body(ordenes);
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
@@ -74,6 +78,22 @@ public class OrdenController {
             }
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @PutMapping("orden/{id}/centroRecoleccion/{idCentro}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Orden> marcarOrdenComoTomada(@PathVariable Long id, @PathVariable Long idCentro) {
+        try {
+            System.out.println("Orden id: "+ id + " Centro id:" + idCentro);
+            Orden orden = this.ordenService.tomarOrden(id, idCentro);
+            return ResponseEntity.status(HttpStatus.OK).body(orden);
+        } catch (OrdenNoEncontrada | CentroRecoleccionNoEncontrado e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (NoTrabajaConMaterial | OrdenTomada e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

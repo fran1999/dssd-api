@@ -1,13 +1,15 @@
 package com.dssd.BackendApi.service;
 
+import com.dssd.BackendApi.exception.NoTrabajaConMaterial;
+import com.dssd.BackendApi.exception.OrdenNoEncontrada;
+import com.dssd.BackendApi.exception.OrdenTomada;
+import com.dssd.BackendApi.model.CentroRecoleccion;
 import com.dssd.BackendApi.model.Material;
 import com.dssd.BackendApi.model.MaterialOrden;
 import com.dssd.BackendApi.model.Orden;
-import com.dssd.BackendApi.repository.MaterialRepository;
 import com.dssd.BackendApi.repository.OrdenRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +22,27 @@ public class OrdenServiceImpl implements OrdenService{
    private final OrdenRepository ordenRepository;
    private final MaterialService materialService;
    private final MaterialOrdenService materialOrdenService;
+   private final CentroRecoleccionService centroRecoleccionService;
 
-   public OrdenServiceImpl(OrdenRepository ordenRepository, MaterialService materialService, MaterialOrdenService materialOrdenService) {
+   public OrdenServiceImpl(
+           OrdenRepository ordenRepository,
+           MaterialService materialService,
+           MaterialOrdenService materialOrdenService,
+           CentroRecoleccionService centroRecoleccionService) {
        this.ordenRepository = ordenRepository;
        this.materialService = materialService;
        this.materialOrdenService = materialOrdenService;
+       this.centroRecoleccionService = centroRecoleccionService;
+   }
+
+   @Override
+   public Orden getOrdenById(Long id) throws RuntimeException {
+       Optional<Orden> orden = this.ordenRepository.findById(id);
+       if (orden.isPresent()) {
+           return orden.get();
+       } else {
+           throw new OrdenNoEncontrada("No se encontro la orden con id: "+ id);
+       }
    }
 
     @Override
@@ -68,11 +86,6 @@ public class OrdenServiceImpl implements OrdenService{
     }
 
     @Override
-    public Orden getOrdenById(Long id) throws Exception {
-        return null;
-    }
-
-    @Override
     public Iterable<Orden> getOrdenesByMaterialBetweenDates(String tipoMaterial, LocalDateTime fechaComienzo, LocalDateTime fechaFin) throws Exception {
         System.out.println("Busqueda por el tipo: " +tipoMaterial);
        Optional<Material> material = this.materialService.getMaterialByTipo(tipoMaterial);
@@ -88,6 +101,28 @@ public class OrdenServiceImpl implements OrdenService{
        System.out.println("Busqueda por el id: " +idMaterial);
        return this.ordenRepository.findOrdenByMateialIdBetweenDates(idMaterial, fechaComienzo, fechaFin);
     }
+
+    @Override
+    public Orden tomarOrden(Long id, Long idCentro) throws RuntimeException {
+       Orden orden = this.getOrdenById(id);
+       CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.getCentroRecoleccionById(idCentro);
+
+       if (orden.getCentroRecoleccion() == null || orden.getCentroRecoleccion().getId().equals(centroRecoleccion.getId())) {
+           boolean noTrabajaConAlgunMaterial = orden.getMaterialesOrden()
+                   .stream()
+                   .anyMatch(materialOrden ->
+                           !centroRecoleccion.getMateriales().contains(materialOrden.getMaterial()));
+
+           if (!noTrabajaConAlgunMaterial) {
+               orden.setFechaInicio(LocalDateTime.now());
+               orden.setCentroRecoleccion(centroRecoleccion);
+               return this.ordenRepository.save(orden);
+           } else {
+               throw new NoTrabajaConMaterial("El centro de recoleccion con id: " + idCentro + " no trajaba con algunos de los materiales de la orden " + id);
+           }
+       }
+       throw new OrdenTomada("La orden ya tiene un centro de recoleccion asignado");
+   }
 
     @Override
     public void deleteOrden(Long id) throws Exception {
