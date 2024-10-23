@@ -1,8 +1,9 @@
 package com.dssd.BackendApi.service;
 
+import com.dssd.BackendApi.exception.FechaEntregaIncorrecta;
 import com.dssd.BackendApi.exception.NoTrabajaConMaterial;
 import com.dssd.BackendApi.exception.OrdenNoEncontrada;
-import com.dssd.BackendApi.exception.OrdenTomada;
+import com.dssd.BackendApi.exception.OrdenTomadaPorOtroCentro;
 import com.dssd.BackendApi.model.CentroRecoleccion;
 import com.dssd.BackendApi.model.Material;
 import com.dssd.BackendApi.model.MaterialOrden;
@@ -121,8 +122,23 @@ public class OrdenServiceImpl implements OrdenService{
                throw new NoTrabajaConMaterial("El centro de recoleccion con id: " + idCentro + " no trajaba con algunos de los materiales de la orden " + id);
            }
        }
-       throw new OrdenTomada("La orden ya tiene un centro de recoleccion asignado");
+       throw new OrdenTomadaPorOtroCentro("La orden ya tiene un centro de recoleccion asignado");
    }
+
+    @Override
+    public Orden terminarOrden(Long id, Long idCentro) throws RuntimeException {
+       Orden orden = this.getOrdenById(id);
+       CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.getCentroRecoleccionById(idCentro);
+       if (orden.getCentroRecoleccion().getId().equals(centroRecoleccion.getId())) {
+           if (orden.getFechaLimite().isBefore(LocalDateTime.now())) {
+               throw new FechaEntregaIncorrecta("No se terminar la orden, no se llego a la fecha limite");
+           }
+           orden.setFechaEntrega(LocalDateTime.now());
+           return this.ordenRepository.save(orden);
+       }
+
+        throw new OrdenTomadaPorOtroCentro("La orden esta asignada a otro centro de recoleccion");
+    }
 
     @Override
     public void deleteOrden(Long id) throws Exception {

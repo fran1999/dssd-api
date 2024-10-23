@@ -16,4 +16,5 @@ public interface OrdenService {
     Iterable<Orden> getOrdenesByMaterialBetweenDates(Long idMaterial, LocalDateTime fechaComienzo, LocalDateTime finFecha);
     void deleteOrden(Long id) throws Exception;
     Orden tomarOrden(Long id, Long idCentro) throws RuntimeException;
+    Orden terminarOrden(Long id, Long idCentro) throws RuntimeException;
 }

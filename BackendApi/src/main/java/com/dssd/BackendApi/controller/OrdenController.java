@@ -3,10 +3,7 @@ package com.dssd.BackendApi.controller;
 
 import com.dssd.BackendApi.dtos.OrdenBusquedaRequest;
 import com.dssd.BackendApi.dtos.OrdenRequest;
-import com.dssd.BackendApi.exception.CentroRecoleccionNoEncontrado;
-import com.dssd.BackendApi.exception.NoTrabajaConMaterial;
-import com.dssd.BackendApi.exception.OrdenNoEncontrada;
-import com.dssd.BackendApi.exception.OrdenTomada;
+import com.dssd.BackendApi.exception.*;
 import com.dssd.BackendApi.model.Orden;
 import com.dssd.BackendApi.service.OrdenService;
 import com.dssd.BackendApi.util.Validacion;
@@ -81,7 +78,7 @@ public class OrdenController {
         }
     }
 
-    @PutMapping("orden/{id}/centroRecoleccion/{idCentro}")
+    @PutMapping("orden/{id}/asignar/{idCentro}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Orden> marcarOrdenComoTomada(@PathVariable Long id, @PathVariable Long idCentro) {
         try {
@@ -90,7 +87,23 @@ public class OrdenController {
             return ResponseEntity.status(HttpStatus.OK).body(orden);
         } catch (OrdenNoEncontrada | CentroRecoleccionNoEncontrado e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (NoTrabajaConMaterial | OrdenTomada e) {
+        } catch (NoTrabajaConMaterial | OrdenTomadaPorOtroCentro e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PutMapping("orden/{id}/entregada/{idCentro}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Orden> terminarOrden(@PathVariable Long id, @PathVariable Long idCentro) {
+        try {
+            System.out.println("Orden id: "+ id + " Centro id:" + idCentro);
+            Orden orden = this.ordenService.terminarOrden(id, idCentro);
+            return ResponseEntity.status(HttpStatus.OK).body(orden);
+        } catch (OrdenNoEncontrada | CentroRecoleccionNoEncontrado e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (OrdenTomadaPorOtroCentro | FechaEntregaIncorrecta e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
