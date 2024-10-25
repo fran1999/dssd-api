@@ -29,11 +29,13 @@ public class CentroRecoleccionController {
     }
 
     @GetMapping("/centrosRecoleccion")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Iterable<CentroRecoleccion>> getAllCentrosRecoleccion() {
         return ResponseEntity.status(HttpStatus.OK).body(this.centroRecoleccionService.getAllCentrosRecoleccion());
     }
 
     @PutMapping("/centrosRecoleccion/{id}/material")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CentroRecoleccion> agregarMaterialAlCentroRecoleccion(@PathVariable Long id, @RequestBody MaterialRequest materialRequest) {
         try {
             if (materialRequest.getId() == null) {
@@ -49,6 +51,7 @@ public class CentroRecoleccionController {
     }
 
     @GetMapping("/centrosRecoleccion/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CentroRecoleccion> getDepositoById(@PathVariable("id") Long id) {
         try {
             CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.getCentroRecoleccionById(id);
