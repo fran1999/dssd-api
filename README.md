@@ -12,7 +12,7 @@ db: api_db_oys9
 
 Conexión a db
 ```bash
-psql -h dpg-cs3s1pg8fa8c73dglro0-a.oregon-postgres.render.com -U api_db_oys9_user api_db_oys9
+psql -h dpg-cspjdu52ng1s73d1ti40-a.oregon-postgres.render.com -U api_db_o4iu_user api_db_o4iu
 ```
 
 Backup tablas y datos
