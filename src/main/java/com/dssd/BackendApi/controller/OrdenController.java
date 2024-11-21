@@ -54,7 +54,7 @@ public class OrdenController {
         return ResponseEntity.status(HttpStatus.OK).body(ordenes);
     }
 
-    @GetMapping("/ordenes/busqueda")
+    @PostMapping("/ordenes/busqueda")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Iterable<Orden>> getOrdenesByMaterialBetweenDates(@RequestBody OrdenBusquedaRequest ordenBusquedaRequest) {
         List<Orden> ordenes;

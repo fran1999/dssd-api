@@ -1,0 +1,27 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: api_db_oys9_user
+      POSTGRES_PASSWORD: B6a94ugaJPClmIB7JOr2UYyce2FhiBpN
+      POSTGRES_DB: api_db_oys9
+  java-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-app
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_USERNAME: api_db_oys9_user
+      DATABASE_PASSWORD: B6a94ugaJPClmIB7JOr2UYyce2FhiBpN
+      DATABASE_URL: jdbc:postgresql://dpg-cs3s1pg8fa8c73dglro0-a.oregon-postgres.render.com:5432/api_db_oys9
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
