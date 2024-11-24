@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,12 +37,14 @@ public class CentroRecoleccionController {
 
     @PutMapping("/centrosRecoleccion/{id}/material")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<CentroRecoleccion> agregarMaterialAlCentroRecoleccion(@PathVariable Long id, @RequestBody MaterialRequest materialRequest) {
+    public ResponseEntity<CentroRecoleccion> agregarMaterialAlCentroRecoleccion(@PathVariable Long id, @RequestBody List<MaterialRequest> materialRequest) {
         try {
-            if (materialRequest.getId() == null) {
+            if (materialRequest.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }
-            CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.asignarMaterialAlCentroRecoleccion(materialRequest.getId(), id);
+            List<Long> idMateriales = materialRequest.stream().map(MaterialRequest::getId).toList();
+            CentroRecoleccion centroRecoleccion = this.centroRecoleccionService.asignarMaterialAlCentroRecoleccion(idMateriales, id);
+
             return ResponseEntity.status(HttpStatus.OK).body(centroRecoleccion);
         } catch (MaterialNoExiste e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
