@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 @Repository
 public interface OrdenRepository extends JpaRepository<Orden, Long> {
 
-    @Query("SELECT o FROM Orden o JOIN o.materialesOrden mo WHERE mo.material.id = :idMaterial AND o.fechaLimite BETWEEN :fechaComienzo AND :fechaFin")
+    @Query("SELECT o FROM Orden o JOIN o.materialesOrden mo WHERE mo.material.id = :idMaterial AND o.fechaLimite BETWEEN :fechaComienzo AND :fechaFin AND o.centroRecoleccion IS NULL")
     Iterable<Orden> findOrdenByMateialIdBetweenDates(@Param("idMaterial") Long idMaterial, @Param("fechaComienzo") LocalDateTime fechaComienzo, @Param("fechaFin") LocalDateTime fechaFin);
 }

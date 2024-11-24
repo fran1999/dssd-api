@@ -7,10 +7,7 @@ import java.time.LocalDateTime;
 @Component
 public class Validacion {
 
-    public boolean validarFechas(LocalDateTime fechaComienzo, LocalDateTime fechaInicio) {
-        if (fechaComienzo.isAfter(fechaInicio) || fechaComienzo.isBefore(LocalDateTime.now())) {
-            return false;
-        }
-        return true;
+    public boolean validarFechas(LocalDateTime fechaComienzo, LocalDateTime fechaFin) {
+        return fechaFin.isAfter(fechaComienzo) && !fechaComienzo.isBefore(LocalDateTime.now());
     }
 }
