@@ -49,6 +49,7 @@ public class OrdenController {
     @GetMapping("/ordenes")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Iterable<Orden>> getOrdenes() {
+        System.out.println("ENTRO");
         Iterable<Orden> ordenes = this.ordenService.getAllOrdenes();
 
         return ResponseEntity.status(HttpStatus.OK).body(ordenes);
@@ -56,7 +57,7 @@ public class OrdenController {
 
     @GetMapping("/ordenes/busqueda")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Iterable<Orden>> getOrdenesByMaterialBetweenDates(@RequestBody OrdenBusquedaRequest ordenBusquedaRequest) {
+    public ResponseEntity<Iterable<?>> getOrdenesByMaterialBetweenDates(@RequestBody OrdenBusquedaRequest ordenBusquedaRequest) {
         List<Orden> ordenes;
         LocalDateTime fechaComienzo = ordenBusquedaRequest.getFechaComienzo();
         LocalDateTime fechaFin = ordenBusquedaRequest.getFechaFin();
@@ -74,27 +75,27 @@ public class OrdenController {
                     System.out.println("Se encontraron " + ordenes.size() + " ordenes");
                     return ResponseEntity.status(HttpStatus.OK).body(ordenes);
                 } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of("No se encontraron ordenes para esas fechas ni para ese material"));
                 }
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of("No se encontraron ordenes para esas fechas ni para ese material"));
             }
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of("Las fechas ingresadas son invalidas"));
         }
     }
 
     @PutMapping("orden/{id}/asignar/{idCentro}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Orden> marcarOrdenComoTomada(@PathVariable Long id, @PathVariable Long idCentro) {
+    public ResponseEntity<?> marcarOrdenComoTomada(@PathVariable Long id, @PathVariable Long idCentro) {
         try {
             System.out.println("Orden id: " + id + " Centro id:" + idCentro);
             Orden orden = this.ordenService.tomarOrden(id, idCentro);
             return ResponseEntity.status(HttpStatus.OK).body(orden);
         } catch (OrdenNoEncontrada | CentroRecoleccionNoEncontrado e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (NoTrabajaConMaterial | OrdenTomadaPorOtroCentro e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (NoTrabajaConMaterial e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMateriales());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -109,7 +110,7 @@ public class OrdenController {
             return ResponseEntity.status(HttpStatus.OK).body(orden);
         } catch (OrdenNoEncontrada | CentroRecoleccionNoEncontrado e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (OrdenTomadaPorOtroCentro | FechaEntregaIncorrecta e) {
+        } catch (FechaEntregaIncorrecta e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
