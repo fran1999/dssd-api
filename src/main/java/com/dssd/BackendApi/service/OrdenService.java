@@ -17,4 +17,5 @@ public interface OrdenService {
     void deleteOrden(Long id) throws Exception;
     Orden tomarOrden(Long id, Long idCentro) throws RuntimeException;
     Orden terminarOrden(Long id, Long idCentro) throws RuntimeException;
+
 }

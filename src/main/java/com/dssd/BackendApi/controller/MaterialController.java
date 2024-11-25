@@ -50,4 +50,14 @@ public class MaterialController {
         return material.map(value -> ResponseEntity.status(HttpStatus.OK).body(value))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
+
+    @PutMapping("/material")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Material> actulizarMaterial(@RequestBody MaterialRequest material) {
+        Material materialCreado = this.materialService.createMaterial(material.getTipo());
+        if (materialCreado == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(materialCreado);
+    }
 }
