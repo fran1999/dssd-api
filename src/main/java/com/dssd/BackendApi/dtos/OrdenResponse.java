@@ -43,7 +43,7 @@ public class OrdenResponse {
         return materialesCantidad;
     }
 
-    public void setMaterialCantidad(List<Map<String, Float>> materialesCantidad) {
+    public void setMaterialesCantidad(List<Map<String, Float>> materialesCantidad) {
         this.materialesCantidad = materialesCantidad;
     }
 
