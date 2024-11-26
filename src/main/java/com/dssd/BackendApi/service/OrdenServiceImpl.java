@@ -152,13 +152,11 @@ public class OrdenServiceImpl implements OrdenService {
 
     private OrdenResponse getOrdenResponse(Orden orden) {
         OrdenResponse response = new OrdenResponse(orden.getId(), orden.getFechaLimite(), orden.getFechaInicio(), orden.getFechaEntrega(), orden.getCentroRecoleccion());
-        List<Map<String, Float>> listaMateriales = new ArrayList<>();
         Map<String, Float> material = new HashMap<>();
         orden.getMaterialesOrden().forEach(materialOrden -> {
             material.put(materialOrden.getMaterial().getTipo(), materialOrden.getCantidad());
-            listaMateriales.add(material);
         });
-        response.setMaterialesCantidad(listaMateriales);
+        response.setMaterialesCantidad(material);
 
         return response;
     }

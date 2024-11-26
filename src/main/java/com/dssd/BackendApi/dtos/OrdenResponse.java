@@ -10,7 +10,7 @@ public class OrdenResponse {
 
     private Long ordenId;
     private LocalDateTime fechaLimite;
-    private List<Map<String, Float>> materialesCantidad;
+    private Map<String, Float> materialesCantidad;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaEntrega;
     private CentroRecoleccion centroRecoleccion;
@@ -39,11 +39,11 @@ public class OrdenResponse {
         this.fechaLimite = fechaLimite;
     }
 
-    public List<Map<String, Float>> getMaterialCantidad() {
+    public Map<String, Float> getMaterialCantidad() {
         return materialesCantidad;
     }
 
-    public void setMaterialesCantidad(List<Map<String, Float>> materialesCantidad) {
+    public void setMaterialesCantidad(Map<String, Float> materialesCantidad) {
         this.materialesCantidad = materialesCantidad;
     }
 
