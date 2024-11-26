@@ -116,8 +116,8 @@ public class OrdenController {
 
     @GetMapping("/ordenes/{idCentro}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Iterable<Orden>> getOrdenesCentro(@PathVariable Long idCentro) {
-        Iterable<Orden> ordenes;
+    public ResponseEntity<Iterable<OrdenResponse>> getOrdenesCentro(@PathVariable Long idCentro) {
+        Iterable<OrdenResponse> ordenes;
         try{
             ordenes = this.ordenService.getOrdenesByCentroId(idCentro);
         }catch (Exception e){

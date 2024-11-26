@@ -56,7 +56,6 @@ public class OrdenServiceImpl implements OrdenService {
                 materialOrden.setMaterial(material.get());
                 materialOrden.setOrden(orden);
                 materialOrden.setCantidad(cantidad);
-                materialOrden.setTipoMaterial(material.get().getTipo());
 
                 MaterialOrden.MaterialOrdenId materialOrdenId = new MaterialOrden.MaterialOrdenId(material.get().getId(), ordenCreada.getId());
                 materialOrden.getId().setOrdenId(materialOrdenId.getOrdenId());
@@ -136,8 +135,14 @@ public class OrdenServiceImpl implements OrdenService {
     }
 
     @Override
-    public Iterable<Orden> getOrdenesByCentroId(Long idCentro) {
-        return this.ordenRepository.findByCentroRecoleccionId(idCentro);
+    public Iterable<OrdenResponse> getOrdenesByCentroId(Long idCentro) {
+        Iterable<Orden> ordenesCentro = this.ordenRepository.findByCentroRecoleccionId(idCentro);
+        List<OrdenResponse> ordenesCentroResponse = new ArrayList<>();
+        for(Orden orden : ordenesCentro) {
+            OrdenResponse ordenResponse = this.getOrdenResponse(orden);
+            ordenesCentroResponse.add(ordenResponse);
+        }
+        return ordenesCentroResponse;
     }
 
     @Override
