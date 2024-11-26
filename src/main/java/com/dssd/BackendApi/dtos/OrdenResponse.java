@@ -3,13 +3,14 @@ package com.dssd.BackendApi.dtos;
 import com.dssd.BackendApi.model.CentroRecoleccion;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class OrdenResponse {
 
     private Long ordenId;
     private LocalDateTime fechaLimite;
-    private Map<String, Float> materialCantidad;
+    private List<Map<String, Float>> materialesCantidad;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaEntrega;
     private CentroRecoleccion centroRecoleccion;
@@ -38,12 +39,12 @@ public class OrdenResponse {
         this.fechaLimite = fechaLimite;
     }
 
-    public Map<String, Float> getMaterialCantidad() {
-        return materialCantidad;
+    public List<Map<String, Float>> getMaterialCantidad() {
+        return materialesCantidad;
     }
 
-    public void setMaterialCantidad(Map<String, Float> materialCantidad) {
-        this.materialCantidad = materialCantidad;
+    public void setMaterialCantidad(List<Map<String, Float>> materialesCantidad) {
+        this.materialesCantidad = materialesCantidad;
     }
 
     public LocalDateTime getFechaInicio() {
