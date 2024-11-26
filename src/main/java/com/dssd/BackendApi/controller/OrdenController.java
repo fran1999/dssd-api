@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -115,6 +116,18 @@ public class OrdenController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @GetMapping("/ordenes/{idCentro}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Iterable<Orden>> getOrdenesCentro(@PathVariable Long idCentro) {
+        Iterable<Orden> ordenes;
+        try{
+            ordenes = this.ordenService.getOrdenesByCentroId(idCentro);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(ordenes);
     }
 
 }

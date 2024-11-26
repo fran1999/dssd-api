@@ -134,6 +134,11 @@ public class OrdenServiceImpl implements OrdenService {
     }
 
     @Override
+    public Iterable<Orden> getOrdenesByCentroId(Long idCentro) {
+        return this.ordenRepository.findByCentroRecoleccionId(idCentro);
+    }
+
+    @Override
     public void deleteOrden(Long id) throws Exception {
 
     }

@@ -1,11 +1,7 @@
 package com.dssd.BackendApi.service;
 
-import com.dssd.BackendApi.model.Material;
 import com.dssd.BackendApi.model.Orden;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 public interface OrdenService {
@@ -18,4 +14,5 @@ public interface OrdenService {
     Orden tomarOrden(Long id, Long idCentro) throws RuntimeException;
     Orden terminarOrden(Long id, Long idCentro) throws RuntimeException;
 
+    Iterable<Orden> getOrdenesByCentroId(Long idCentro);
 }
