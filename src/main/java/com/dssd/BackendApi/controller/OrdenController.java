@@ -3,6 +3,7 @@ package com.dssd.BackendApi.controller;
 
 import com.dssd.BackendApi.dtos.OrdenBusquedaRequest;
 import com.dssd.BackendApi.dtos.OrdenRequest;
+import com.dssd.BackendApi.dtos.OrdenResponse;
 import com.dssd.BackendApi.exception.*;
 import com.dssd.BackendApi.model.Orden;
 import com.dssd.BackendApi.service.OrdenService;
@@ -59,7 +60,6 @@ public class OrdenController {
     @PostMapping("/ordenes/busqueda")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Iterable<?>> getOrdenesByMaterialBetweenDates(@RequestBody OrdenBusquedaRequest ordenBusquedaRequest) {
-        List<Orden> ordenes;
         LocalDateTime fechaComienzo = ordenBusquedaRequest.getFechaComienzo();
         LocalDateTime fechaFin = ordenBusquedaRequest.getFechaFin();
 
@@ -67,11 +67,7 @@ public class OrdenController {
 
         if (validacion.validarFechas(fechaComienzo, fechaFin)) {
             try {
-                if (ordenBusquedaRequest.getIdMaterial() != null) {
-                    ordenes = (List<Orden>) this.ordenService.getOrdenesByMaterialBetweenDates(ordenBusquedaRequest.getIdMaterial(), fechaComienzo, fechaFin);
-                } else {
-                    ordenes = (List<Orden>) this.ordenService.getOrdenesByMaterialBetweenDates(ordenBusquedaRequest.getTipoMaterial(), fechaComienzo, fechaFin);
-                }
+                List<OrdenResponse> ordenes = (List<OrdenResponse>) this.ordenService.getOrdenesByMaterialBetweenDates(ordenBusquedaRequest.getTipoMaterial(), fechaComienzo, fechaFin);
                 if (!ordenes.isEmpty()) {
                     System.out.println("Se encontraron " + ordenes.size() + " ordenes");
                     return ResponseEntity.status(HttpStatus.OK).body(ordenes);
