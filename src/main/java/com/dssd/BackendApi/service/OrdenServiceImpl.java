@@ -58,6 +58,7 @@ public class OrdenServiceImpl implements OrdenService {
                 materialOrden.setMaterial(material.get());
                 materialOrden.setOrden(orden);
                 materialOrden.setCantidad(cantidad);
+                materialOrden.setTipoMaterial(material.get().getTipo());
 
                 MaterialOrden.MaterialOrdenId materialOrdenId = new MaterialOrden.MaterialOrdenId(material.get().getId(), ordenCreada.getId());
                 materialOrden.getId().setOrdenId(materialOrdenId.getOrdenId());

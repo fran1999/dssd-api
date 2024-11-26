@@ -86,6 +86,8 @@ public class MaterialOrden {
 
     private Float cantidad;
 
+    private String tipoMaterial;
+
     public void setMaterial(Material material) {
         this.material = material;
     }
@@ -113,4 +115,12 @@ public class MaterialOrden {
     public Float getCantidad() {
         return cantidad;
     }
+
+    public String getTipoMaterial() {
+        return tipoMaterial;
+    }
+    public void setTipoMaterial(String tipoMaterial) {
+        this.tipoMaterial = tipoMaterial;
+    }
+
 }
