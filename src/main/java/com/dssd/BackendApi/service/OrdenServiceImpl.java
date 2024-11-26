@@ -1,5 +1,6 @@
 package com.dssd.BackendApi.service;
 
+import com.dssd.BackendApi.dtos.OrdenResponse;
 import com.dssd.BackendApi.exception.*;
 import com.dssd.BackendApi.model.CentroRecoleccion;
 import com.dssd.BackendApi.model.Material;
@@ -9,10 +10,7 @@ import com.dssd.BackendApi.repository.OrdenRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrdenServiceImpl implements OrdenService {
@@ -87,11 +85,14 @@ public class OrdenServiceImpl implements OrdenService {
     }
 
     @Override
-    public Iterable<Orden> getOrdenesByMaterialBetweenDates(String tipoMaterial, LocalDateTime fechaComienzo, LocalDateTime fechaFin) throws Exception {
+    public Iterable<OrdenResponse> getOrdenesByMaterialBetweenDates(String tipoMaterial, LocalDateTime fechaComienzo, LocalDateTime fechaFin) throws Exception {
         System.out.println("Busqueda por el tipo: " + tipoMaterial);
         Optional<Material> material = this.materialService.getMaterialByTipo(tipoMaterial);
         if (material.isPresent()) {
-            return this.ordenRepository.findOrdenByMateialIdBetweenDates(material.get().getId(), fechaComienzo, fechaFin);
+            List<Orden> ordenes = (List<Orden>) this.ordenRepository.findOrdenByMateialIdBetweenDates(material.get().getId(), fechaComienzo, fechaFin);
+            List<OrdenResponse> ordenList = new ArrayList<>();
+            ordenes.forEach(orden -> ordenList.add(this.getOrdenResponse(orden)));
+            return ordenList;
         }
 
         return List.of();
@@ -143,5 +144,15 @@ public class OrdenServiceImpl implements OrdenService {
 
     }
 
+    private OrdenResponse getOrdenResponse(Orden orden) {
+        OrdenResponse response = new OrdenResponse(orden.getId(), orden.getFechaLimite(), orden.getFechaInicio(), orden.getFechaEntrega(), orden.getCentroRecoleccion());
+        Map<String, Float> materiales = new HashMap<>();
+        orden.getMaterialesOrden().forEach(materialOrden -> {
+            materiales.put(materialOrden.getMaterial().getTipo(), materialOrden.getCantidad());
+        });
+        response.setMaterialCantidad(materiales);
+
+        return response;
+    }
 
 }
