@@ -133,14 +133,16 @@ public class OrdenServiceImpl implements OrdenService {
     @Override
     public Orden terminarOrden(Long id, Long idCentro) throws RuntimeException {
         Orden orden = this.getOrdenById(id);
+        System.out.println("Orden encontrada: "+orden.getId());
 
         ZoneId argentinaZone = ZoneId.of("America/Argentina/Buenos_Aires");
         ZonedDateTime nowInArgentina = ZonedDateTime.now(argentinaZone);
         System.out.println("Fecha y hora actuales en Argentina: " + nowInArgentina);
 
         ZonedDateTime fechaLimiteInArgentina = orden.getFechaLimite().atZone(argentinaZone);
+        System.out.println("Fecha y hora limite: " + fechaLimiteInArgentina);
 
-        if (fechaLimiteInArgentina.isBefore(nowInArgentina)) {
+        if (nowInArgentina.isBefore(fechaLimiteInArgentina)) {
             throw new FechaEntregaIncorrecta("No se puede terminar la orden, no se llego a la fecha limite");
         }
 
