@@ -10,6 +10,8 @@ import com.dssd.BackendApi.repository.OrdenRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Service
@@ -127,10 +129,18 @@ public class OrdenServiceImpl implements OrdenService {
     @Override
     public Orden terminarOrden(Long id, Long idCentro) throws RuntimeException {
         Orden orden = this.getOrdenById(id);
-        if (orden.getFechaLimite().isBefore(LocalDateTime.now())) {
+
+        ZoneId argentinaZone = ZoneId.of("America/Argentina/Buenos_Aires");
+        ZonedDateTime nowInArgentina = ZonedDateTime.now(argentinaZone);
+        System.out.println("Fecha y hora actuales en Argentina: " + nowInArgentina);
+
+        ZonedDateTime fechaLimiteInArgentina = orden.getFechaLimite().atZone(argentinaZone);
+
+        if (fechaLimiteInArgentina.isBefore(nowInArgentina)) {
             throw new FechaEntregaIncorrecta("No se puede terminar la orden, no se llego a la fecha limite");
         }
-        orden.setFechaEntrega(LocalDateTime.now());
+
+        orden.setFechaEntrega(nowInArgentina.toLocalDateTime());
         return this.ordenRepository.save(orden);
     }
 
