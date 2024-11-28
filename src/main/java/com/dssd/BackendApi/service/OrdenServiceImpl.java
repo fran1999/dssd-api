@@ -118,7 +118,11 @@ public class OrdenServiceImpl implements OrdenService {
                 .toList();
 
         if (materialesQueNoTrabaja.isEmpty()) {
-            orden.setFechaInicio(LocalDateTime.now());
+            ZoneId argentinaZone = ZoneId.of("America/Argentina/Buenos_Aires");
+            ZonedDateTime nowInArgentina = ZonedDateTime.now(argentinaZone);
+            System.out.println("Fecha y hora actuales en Argentina: " + nowInArgentina);
+
+            orden.setFechaInicio(nowInArgentina.toLocalDateTime());
             orden.setCentroRecoleccion(centroRecoleccion);
             return this.ordenRepository.save(orden);
         } else {
